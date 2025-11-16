@@ -1,2 +1,14 @@
 # ComfyUI-TiledVaeLite
 Tiled VAE decode node for ComfyUI
+
+Modified from https://github.com/Lightricks/ComfyUI-LTXVideo
+
+Faster than the ComfyUI core tiled VAE decode node, and less clutter to the node tree than the full LTXV package. This adds only two nodes under the latent category. DecoderNoise has not been modified but it seemed fitting to include.
+
+Modifications compared to the LTXV tiled VAE decode node:
+* Progress bar
+* 2x2 tiles and overlap 4 (32 pixels) by default when adding the node
+* Actual logging instead of `print` so it doesn't mess up the ComfyUI bottom panel log
+* Changed the log messages a little for better readability and added time measurements per tile and total
+
+Can be useful with low VRAM for decoding for example Wan videos (especially the 5B TI2V which has a big and slow VAE) or any large image.
