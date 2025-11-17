@@ -72,7 +72,6 @@ class LTTiledVAEDecode:
 
         pbar = ProgressBar(horizontal_tiles * vertical_tiles)
 
-        mult = 8 # to display sizes in pixels
         time_init = time.perf_counter()
         # Process each tile
         for v in range(vertical_tiles):
@@ -97,7 +96,7 @@ class LTTiledVAEDecode:
                 tile_height = v_end - v_start
                 tile_width = h_end - h_start
 
-                logging.info(f"Processing VAE decode tile at row {v}, col {h}:  Position: ({v_start*mult}:{v_end*mult}, {h_start*mult}:{h_end*mult}), Size: {tile_height*mult}x{tile_width*mult}")
+                logging.info(f"Processing VAE decode tile at row {v}, col {h}:  Position: ({h_start*width_scale_factor}:{h_end*width_scale_factor}, {v_start*height_scale_factor}:{v_end*height_scale_factor}), Size: {tile_width*width_scale_factor}x{tile_height*height_scale_factor}")
                 time_before = time.perf_counter()
 
                 # Extract tile
