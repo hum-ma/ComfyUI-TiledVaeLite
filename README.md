@@ -7,8 +7,8 @@ Faster than the ComfyUI core tiled VAE decode node, and less clutter to the node
 
 Modifications compared to the LTXV tiled VAE decode node:
 * Progress bar
-* 2x2 tiles and overlap 4 (32 pixels) by default when adding the node
+* 2x2 tiles and overlap 4 (32 or 64 pixels) by default when adding the node
 * Actual logging instead of `print` so it doesn't mess up the ComfyUI bottom panel log
-* Changed the log messages a little for better readability and added time measurements per tile and total
+* Changed formatting of the log messages a little and added time measurements per tile and total
 
 Can be useful with low VRAM for decoding for example Wan videos (especially the 5B TI2V which has a big and slow VAE) or any large image.
