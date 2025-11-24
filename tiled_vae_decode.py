@@ -2,13 +2,8 @@ import torch
 import time
 import logging
 
-from .nodes_registry import comfy_node
 from comfy.utils import ProgressBar
 
-
-@comfy_node(
-    name="TiledVAEDecode",
-)
 class LTTiledVAEDecode:
 
     @classmethod

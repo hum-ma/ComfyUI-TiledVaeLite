@@ -1,9 +1,5 @@
 from copy import copy
 
-from .nodes_registry import comfy_node
-
-
-@comfy_node(name="Set VAE Decoder Noise")
 class DecoderNoise:
     @classmethod
     def INPUT_TYPES(cls):
