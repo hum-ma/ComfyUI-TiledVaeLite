@@ -46,11 +46,24 @@ class LTTiledVAEDecode:
             ]  # shape: [batch, channels, 1, height, width]
             samples = torch.cat([samples, last_frame], dim=2)
 
-        batch, channels, frames, height, width = samples.shape
-        time_scale_factor, width_scale_factor, height_scale_factor = (
-            vae.downscale_index_formula
-        )
-        image_frames = 1 + (frames - 1) * time_scale_factor
+
+        if samples.ndim == 5: # video latent
+            batch, channels, frames, height, width = samples.shape
+            time_scale_factor, width_scale_factor, height_scale_factor = (
+                vae.downscale_index_formula
+            )
+            image_frames = 1 + (frames - 1) * time_scale_factor
+        else: # 4, image latent
+            batch, channels, height, width = samples.shape
+            image_frames = 1
+            time_scale_factor = 1
+            if vae.downscale_index_formula is not None:
+                width_scale_factor, height_scale_factor = (
+                    vae.downscale_index_formula
+                )
+            else:
+                width_scale_factor = vae.downscale_ratio
+                height_scale_factor = vae.downscale_ratio
 
         # Calculate output image dimensions
         output_height = height * height_scale_factor
@@ -95,7 +108,10 @@ class LTTiledVAEDecode:
                 time_before = time.perf_counter()
 
                 # Extract tile
-                tile = samples[:, :, :, v_start:v_end, h_start:h_end]
+                if samples.ndim == 5:
+                    tile = samples[:, :, :, v_start:v_end, h_start:h_end]
+                else:
+                    tile = samples[:, :, v_start:v_end, h_start:h_end]
 
                 # Create tile latents dict
                 tile_latents = {"samples": tile}
