@@ -38,16 +38,15 @@ class LTTiledVAEDecode:
         # Get the latent samples
         samples = latents["samples"]
 
-        if last_frame_fix:
-            # Repeat the last frame along dimension 2 (frames)
-            # samples: [batch, channels, frames, height, width]
-            last_frame = samples[
-                :, :, -1:, :, :
-            ]  # shape: [batch, channels, 1, height, width]
-            samples = torch.cat([samples, last_frame], dim=2)
-
-
         if samples.ndim == 5: # video latent
+            if last_frame_fix:
+                # Repeat the last frame along dimension 2 (frames)
+                # samples: [batch, channels, frames, height, width]
+                last_frame = samples[
+                    :, :, -1:, :, :
+                ]  # shape: [batch, channels, 1, height, width]
+                samples = torch.cat([samples, last_frame], dim=2)
+
             batch, channels, frames, height, width = samples.shape
             time_scale_factor, width_scale_factor, height_scale_factor = (
                 vae.downscale_index_formula
@@ -211,7 +210,7 @@ class LTTiledVAEDecode:
             batch * image_frames, output_height, output_width, output.shape[-1]
         )
 
-        if last_frame_fix:
+        if last_frame_fix and samples.ndim == 5:
             output = output[:-time_scale_factor, :, :]
 
         time_total = time.perf_counter()-time_init
