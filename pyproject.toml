@@ -28,7 +28,7 @@ Documentation = "https://github.com/hum-ma/ComfyUI-TiledVaeLite/wiki"
 "Bug Tracker" = "https://github.com/hum-ma/ComfyUI-TiledVaeLite/issues"
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "hum-ma"
 DisplayName = "ComfyUI-TiledVaeLite"
 Icon = ""
 includes = [] 
