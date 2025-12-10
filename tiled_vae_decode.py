@@ -198,7 +198,8 @@ class LTTiledVAEDecode:
                     :, :, out_h_start:out_h_end, out_w_start:out_w_end, :
                 ] += tile_weights
                 time_elapsed = time.perf_counter()-time_before
-                logging.info("  Time: {:.2f} seconds".format(time_elapsed))
+                if vertical_tiles * horizontal_tiles != 1:
+                    logging.info("  Time: {:.2f} seconds".format(time_elapsed))
 
                 pbar.update(1)
 
