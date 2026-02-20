@@ -1,7 +1,7 @@
 [project]
 name = "tiledvaelite"
-description = "A faster tiled VAE decode node for ComfyUI based on LTXV, optimized for low VRAM scenarios with configurable tiling, progress bars, and improved logging for decoding large images and videos."
-version = "1.0.0"
+description = "A faster tiled VAE decode node for ComfyUI based on LTXV, optimized for low VRAM scenarios with configurable tiling, progress bar, and improved logging for decoding large images and videos."
+version = "1.0.1"
 license = {file = "LICENSE"} 
 # classifiers = [
 #     # For OS-independent nodes (works on all operating systems)
@@ -24,7 +24,7 @@ license = {file = "LICENSE"}
 [project.urls]
 Repository = "https://github.com/hum-ma/ComfyUI-TiledVaeLite"
 #  Used by Comfy Registry https://registry.comfy.org
-Documentation = "https://github.com/hum-ma/ComfyUI-TiledVaeLite/wiki"
+#Documentation = "https://github.com/hum-ma/ComfyUI-TiledVaeLite/wiki"
 "Bug Tracker" = "https://github.com/hum-ma/ComfyUI-TiledVaeLite/issues"
 
 [tool.comfy]
