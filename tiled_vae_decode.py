@@ -12,8 +12,8 @@ class LTTiledVAEDecode:
             "required": {
                 "vae": ("VAE",),
                 "latents": ("LATENT",),
-                "horizontal_tiles": ("INT", {"default": 2, "min": 1, "max": 6}),
-                "vertical_tiles": ("INT", {"default": 2, "min": 1, "max": 6}),
+                "horizontal_tiles": ("INT", {"default": 2, "min": 1, "max": 8}),
+                "vertical_tiles": ("INT", {"default": 2, "min": 1, "max": 8}),
                 "overlap": ("INT", {"default": 4, "min": 1, "max": 8}),
                 "last_frame_fix": ("BOOLEAN", {"default": False}),
             },
@@ -68,24 +68,28 @@ class LTTiledVAEDecode:
         output_height = height * height_scale_factor
         output_width = width * width_scale_factor
 
-        # Calculate tile sizes with overlap
-        base_tile_height = (height + (vertical_tiles - 1) * overlap) // vertical_tiles
-        base_tile_width = (width + (horizontal_tiles - 1) * overlap) // horizontal_tiles
-
         # Initialize output tensor and weight tensor
         # VAE decode returns images in format [batch, height, width, channels]
         output = None
         weights = None
 
-        pbar = ProgressBar(horizontal_tiles * vertical_tiles)
+        num_tiles = vertical_tiles * horizontal_tiles
+        pbar = ProgressBar(num_tiles)
 
         time_init = time.perf_counter()
-        # Process each tile
+        # vertical units yet to process, divided more or less evenly between tiles
+        vert_remain = height + (vertical_tiles-1) * overlap
+        v_start = 0
         for v in range(vertical_tiles):
+            base_tile_height = vert_remain // (vertical_tiles - v)
+            if vert_remain % base_tile_height:
+                base_tile_height += 1 # first tiles larger if uneven; rather OOM early than late
+            horz_remain = width + (horizontal_tiles-1) * overlap
+            h_start = 0
             for h in range(horizontal_tiles):
-                # Calculate tile boundaries
-                h_start = h * (base_tile_width - overlap)
-                v_start = v * (base_tile_height - overlap)
+                base_tile_width = horz_remain // (horizontal_tiles - h)
+                if horz_remain % base_tile_width:
+                    base_tile_width += 1
 
                 # Adjust end positions for edge tiles
                 h_end = (
@@ -199,9 +203,13 @@ class LTTiledVAEDecode:
                 ] += tile_weights
                 time_elapsed = time.perf_counter()-time_before
                 if vertical_tiles * horizontal_tiles != 1:
-                    logging.info("  Time: {:.2f} seconds".format(time_elapsed))
+                    logging.info(f"({v*horizontal_tiles+h+1}/{num_tiles}) time: {time_elapsed:.2f} seconds") #.format(time_elapsed))
 
+                horz_remain -= base_tile_width
+                h_start = h_end - overlap
                 pbar.update(1)
+            vert_remain -= base_tile_height
+            v_start = v_end - overlap
 
         # Normalize by weights
         output = output / (weights + 1e-8)
